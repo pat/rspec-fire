@@ -135,7 +135,7 @@ module RSpec
       end
 
       def with_doubled_class
-        if recursive_const_defined?(@__doubled_class_name)
+        if recursive_constant_exists? && !recursive_constant_double?
           yield recursive_const_get(@__doubled_class_name)
         end
       end
@@ -146,6 +146,15 @@ module RSpec
         with_doubled_class do |klass|
           klass.should implement(method_names, @__checked_methods)
         end
+      end
+
+      def recursive_constant_exists?
+        recursive_const_defined?(@__doubled_class_name)
+      end
+
+      def recursive_constant_double?
+        recursive_const_get(@__doubled_class_name).
+          respond_to?(:as_replaced_constant)
       end
 
       define :implement do |expected_methods, checked_methods|
