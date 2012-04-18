@@ -220,6 +220,7 @@ module RSpec
             end
 
             def self.method_missing(name, *args)
+              raise NoMethodError if name == :to_ary
               __mock_proxy.raise_unexpected_message_error(name, *args)
             end
           end
